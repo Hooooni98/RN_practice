@@ -114,3 +114,6 @@
         1. execute android studio
         2. More Actions > Virtual Device Manager > right tap > cold Boot Now
  
+
+#### 8. set vscode extension
+    https://tolovefeels.tistory.com/entry/Visual-Studio-Code-에서-React-개발환경에-필요한-확장-프로그램
