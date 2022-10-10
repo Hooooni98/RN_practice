@@ -38,8 +38,8 @@ project.xcworkspace
 /ReactAndroid/gradlew.bat
 /ReactAndroid/hermes-engine/build/
 /ReactAndroid/hermes-engine/.cxx/
-/practice-project/android/app/build/
-/practice-project/android/build/
+/practice_project/android/app/build/
+/practice_project/android/build/
 
 # Buck
 .buckd
@@ -95,12 +95,12 @@ package-lock.json
 
 # Ruby Gems (Bundler)
 /vendor
-/practice-project/vendor
+/practice_project/vendor
 
 # iOS / CocoaPods
-/practice-project/ios/build/
-/practice-project/ios/Pods/
-/practice-project/ios/Podfile.lock
+/practice_project/ios/build/
+/practice_project/ios/Pods/
+/practice_project/ios/Podfile.lock
 /packages/rn-tester/Gemfile.lock
 
 # Ignore RNTester specific Pods, but keep the __offline_mirrors__ here.
