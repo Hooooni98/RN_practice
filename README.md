@@ -1,5 +1,5 @@
 # RN_PRACTICE
-###### react native install, setting, basic sturcture for mac
+###### [ react native install, setting, basic sturcture for mac ]
 
 #### 1. install Homebrew
     brew --version          # check version
@@ -116,4 +116,14 @@
  
 
 #### 8. set vscode extension
-    https://tolovefeels.tistory.com/entry/Visual-Studio-Code-에서-React-개발환경에-필요한-확장-프로그램
+    https://tolovefeels.tistory.com/entry/Visual-Studio-Code-에서-React-개발환경에-필요한-확장-프로그램  
+  
+<br/>
+
+###### [ include project skills ]
+    0) directory structure
+    1) navigation (bottom tabs)
+    2) axios API calls (request, response, pagination)
+    3) push notification
+    4) kakao login
+    5) naver map
