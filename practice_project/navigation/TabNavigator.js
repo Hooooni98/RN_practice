@@ -14,6 +14,7 @@ const TabNavigator = () => {
       }}>
       {Route.map(route => (
         <Tab.Screen
+          key={route.id}
           name={route.name}
           component={route.component}
           options={{
