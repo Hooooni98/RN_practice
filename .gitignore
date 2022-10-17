@@ -126,3 +126,6 @@ package-lock.json
 
 # Android memory profiler files
 *.hprof
+
+# environment file
+.env
