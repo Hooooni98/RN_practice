@@ -6,20 +6,20 @@ const PROFILE_IMAGE_WIDTH = width * 0.1;
 const PROFILE_IMAGE_HEIGHT = PROFILE_IMAGE_WIDTH;
 const IMAGE_WIDTH = width;
 const IMAGE_HEIGHT = IMAGE_WIDTH;
-export function UI_Feed(props) {
+export const UI_Feed = ({item}) => {
   return (
     <View style={styles.container}>
       {/* 프사, 닉네임 */}
       <View style={styles.header_container}>
         <Image
-          source={{uri: props.profile_image}}
+          source={{uri: item.profile_image}}
           style={styles.profile_image}
         />
-        <Text style={styles.nickname}>{props.nickname}</Text>
+        <Text style={styles.nickname}>{item.nickname}</Text>
       </View>
       {/* 이미지 */}
       <View style={styles.image_container}>
-        <Image source={{uri: props.image}} style={styles.image} />
+        <Image source={{uri: item.image[0]}} style={styles.image} />
       </View>
       {/* 유용한 기능 포크, 댓글 등등 */}
       <View style={styles.useful_content}></View>
@@ -27,25 +27,25 @@ export function UI_Feed(props) {
       <View style={styles.content}>
         <View style={styles.content_detail}>
           <View style={styles.fooiyti_container}>
-            <Text style={styles.fooiyti}>{props.fooiyti}</Text>
+            <Text style={styles.fooiyti}>{item.fooiyti}</Text>
             <Image
-              source={{uri: props.taste_evaluation}}
+              source={{uri: item.taste_evaluation_image}}
               style={styles.taste_evaluation_image}
             />
           </View>
           <View style={styles.shop_container}>
-            <Text style={styles.shop}>{props.shop_name}</Text>
+            <Text style={styles.shop}>{item.shop_name}</Text>
             <View style={styles.menu_container}>
-              <Text>{props.menu_name}</Text>
-              <Text style={styles.menu_price}>{props.menu_price}</Text>
+              <Text>{item.menu_name}</Text>
+              <Text style={styles.menu_price}>{item.menu_price}</Text>
             </View>
           </View>
         </View>
-        <Text style={styles.comment}>{props.comment}</Text>
+        <Text style={styles.comment}>{item.comment}</Text>
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

@@ -1,53 +1,74 @@
 import {ApiMangerV1} from '../../common/api/v1/ApiMangerV1';
 import {React, useEffect, useState} from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
+import {View, StyleSheet, Image, FlatList, Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {UI_Feed} from '../../common_ui/feed/Feed';
-
-// export const result = async data => {
-//   console.log(result);
-//   return result;
-// };
+import {globalVariable} from '../../common/globalVariable';
+import {RenderLoader} from '../../common_ui/RenderLoader';
 
 const Feed = () => {
   const [feeds, setFeeds] = useState([]);
+  const [offset, setOffset] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [noFeedImage, setNoFeedImage] = useState(null);
   const getFeedList = async data => {
-    await ApiMangerV1.get('feeds/feed/').then(res =>
-      setFeeds(res.data.payload.feed_list.results),
-    );
+    setIsLoading(true);
+    await ApiMangerV1.get('feeds/feed/', {
+      params: {
+        limit: globalVariable.FeedLimit,
+        offset: offset,
+        address_depth1: '',
+      },
+    }).then(res => {
+      if (res.data.payload.feed_list) {
+        setFeeds([...feeds, ...res.data.payload.feed_list.results]);
+        setIsLoading(false);
+        setTotalCount(res.data.payload.feed_list.total_count);
+        setNoFeedImage(null);
+      } else {
+        setNoFeedImage(res.data.payload.image);
+      }
+    });
     // .catch(function (error) => console.log(error));
+  };
+  const loadMoreItem = () => {
+    console.log(totalCount, offset);
+    if (totalCount > offset) {
+      setOffset(offset + globalVariable.FeedLimit);
+    }
   };
   useEffect(() => {
     getFeedList();
-  }, []);
+  }, [offset]);
 
-  console.log(feeds[0]);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.contentContainer}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {feeds.map((feed, index) => (
-            // eslint-disable-next-line react/self-closing-comp
-            <UI_Feed
-              key={index}
-              profile_image={feed.profile_image}
-              nickname={feed.nickname}
-              image={feed.image[0]}
-              fooiyti={feed.fooiyti}
-              taste_evaluation={feed.taste_evaluation_image}
-              shop_name={feed.shop_name}
-              menu_name={feed.menu_name}
-              menu_price={feed.menu_price}
-              comment={feed.comment}
-              count_liked={feed.count_liked}></UI_Feed>
-          ))}
-        </ScrollView>
+        {noFeedImage ? (
+          <View>
+            <Image source={{uri: noFeedImage}} style={styles.test} />
+          </View>
+        ) : (
+          <FlatList
+            data={feeds}
+            renderItem={UI_Feed}
+            keyExtractor={(feeds, index) => index.toString()}
+            ListFooterComponent={RenderLoader(isLoading)}
+            onEndReached={loadMoreItem}
+            onEndReachedThreshold={3}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  test: {
+    width: 250,
+    height: 250,
+  },
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
