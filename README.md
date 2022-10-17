@@ -123,7 +123,12 @@
 ###### [ include project skills ]
     0) directory structure
     1) navigation (bottom tabs)
-    2) axios API calls (request, response, pagination)
-    3) push notification
-    4) kakao login
-    5) naver map
+    2) axios API calls (request, response)
+    2-1) post | save response data in memory
+    2-2) get | InfiniteScroll, Pagination
+    2-3) redux tool-kit
+    3) custom camera
+    4) custom calender
+    5) push notification
+    6) kakao login
+    7) naver map
