@@ -1,12 +1,16 @@
 import React from 'react';
-import {View, Text, Image, Dimensions, StyleSheet} from 'react-native';
+import {View, Text, Image, Dimensions, StyleSheet, Button} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 const {width} = Dimensions.get('screen');
 const PROFILE_IMAGE_WIDTH = width * 0.1;
 const PROFILE_IMAGE_HEIGHT = PROFILE_IMAGE_WIDTH;
 const IMAGE_WIDTH = width;
 const IMAGE_HEIGHT = IMAGE_WIDTH;
-export const UI_Feed = ({item}) => {
+
+export const UI_Feed = item => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       {/* 프사, 닉네임 */}
@@ -34,7 +38,18 @@ export const UI_Feed = ({item}) => {
             />
           </View>
           <View style={styles.shop_container}>
-            <Text style={styles.shop}>{item.shop_name}</Text>
+            <TouchableOpacity
+              style={styles.shop}
+              onPress={() => {
+                navigation.navigate('Shop', {
+                  shop_id: item.shop_id,
+                  shop_name: item.shop_name,
+                  shop_address: item.shop_address,
+                });
+              }}>
+              <Text>{item.shop_name}</Text>
+            </TouchableOpacity>
+
             <View style={styles.menu_container}>
               <Text>{item.menu_name}</Text>
               <Text style={styles.menu_price}>{item.menu_price}</Text>
@@ -55,6 +70,7 @@ const styles = StyleSheet.create({
   },
   profile_image: {
     borderRadius: 100,
+    marginLeft: 16,
     width: PROFILE_IMAGE_WIDTH,
     height: PROFILE_IMAGE_HEIGHT,
   },
@@ -63,7 +79,9 @@ const styles = StyleSheet.create({
   },
   nickname: {
     justifyContent: 'center',
+    flex: 1,
     paddingLeft: 10,
+    height: PROFILE_IMAGE_HEIGHT,
   },
 
   image_container: {

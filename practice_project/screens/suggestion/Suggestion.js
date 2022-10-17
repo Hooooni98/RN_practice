@@ -3,11 +3,11 @@ import {View, Text, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 const Suggestion = () => {
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Text style={styles.title}>Suggestion</Text>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

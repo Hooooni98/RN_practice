@@ -19,7 +19,7 @@ const ITEM_HEIGHT = ITEM_WIDTH * 0.9;
 const Map = () => {
   const tabBarheight = useBottomTabBarHeight();
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.contentContainer}></View>
 
       {/* Scrollable Content */}
@@ -42,7 +42,7 @@ const Map = () => {
           ))}
         </ScrollView>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

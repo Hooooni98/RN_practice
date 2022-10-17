@@ -1,12 +1,14 @@
-import {ApiMangerV1} from '../../common/api/v1/ApiMangerV1';
 import {React, useEffect, useState} from 'react';
-import {View, StyleSheet, Image, FlatList, Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {UI_Feed} from '../../common_ui/feed/Feed';
-import {globalVariable} from '../../common/globalVariable';
-import {RenderLoader} from '../../common_ui/RenderLoader';
+import {View, StyleSheet, Image, FlatList} from 'react-native';
 
-const Feed = () => {
+import {ApiMangerV1} from '../../common/api/v1/ApiMangerV1';
+import {globalVariable} from '../../common/globalVariable';
+import {UI_Feed} from '../../common_ui/feed/Feed';
+import {RenderLoader} from '../../common_ui/RenderLoader';
+import {DefaultHeader} from '../../common_ui/headers/DefaultHeader';
+
+const Feed = ({navigation}) => {
   const [feeds, setFeeds] = useState([]);
   const [offset, setOffset] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
@@ -33,53 +35,40 @@ const Feed = () => {
     // .catch(function (error) => console.log(error));
   };
   const loadMoreItem = () => {
-    console.log(totalCount, offset);
     if (totalCount > offset) {
       setOffset(offset + globalVariable.FeedLimit);
     }
   };
   useEffect(() => {
     getFeedList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.contentContainer}>
-        {noFeedImage ? (
-          <View>
-            <Image source={{uri: noFeedImage}} style={styles.test} />
-          </View>
-        ) : (
-          <FlatList
-            data={feeds}
-            renderItem={UI_Feed}
-            keyExtractor={(feeds, index) => index.toString()}
-            ListFooterComponent={RenderLoader(isLoading)}
-            onEndReached={loadMoreItem}
-            onEndReachedThreshold={3}
-          />
-        )}
-      </View>
+      <DefaultHeader />
+      {noFeedImage ? (
+        <View>
+          <Image source={{uri: noFeedImage}} style={styles.test} />
+        </View>
+      ) : (
+        <FlatList
+          data={feeds}
+          renderItem={({item}) => <UI_Feed {...item} />}
+          keyExtractor={(feeds, index) => index.toString()}
+          ListFooterComponent={RenderLoader(isLoading)}
+          onEndReached={loadMoreItem}
+          onEndReachedThreshold={3}
+        />
+      )}
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  test: {
-    width: 250,
-    height: 250,
-  },
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
-  },
-  contentContainer: {
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 20,
-    color: '#000',
   },
 });
 
