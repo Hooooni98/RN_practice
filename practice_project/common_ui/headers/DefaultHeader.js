@@ -1,11 +1,10 @@
+import React from 'react';
 import {View, Image, StyleSheet} from 'react-native';
 
 export const DefaultHeader = () => {
   return (
     <View style={styles.header_container}>
-      <Image
-        source={require('../../assets/logo.png')}
-        style={styles.logo}></Image>
+      <Image source={require('../../assets/logo.png')} style={styles.logo} />
     </View>
   );
 };

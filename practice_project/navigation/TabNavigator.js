@@ -1,10 +1,17 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {StyleSheet, View, Image, Platform} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Route} from './Route';
+import {Feed} from '../screens/feed/Feed';
+
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
+  const location = useRef(null);
+  const setCurrent = component => {
+    location.current = component;
+  };
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -28,6 +35,15 @@ const TabNavigator = () => {
               </View>
             ),
           }}
+          listeners={({navigation, route}) => ({
+            tabPress: e => {
+              if (route.name === 'FeedStackNavigation') {
+                if (navigation.isFocused()) {
+                  navigation.navigate('FeedStackNavigation');
+                }
+              }
+            },
+          })}
         />
       ))}
     </Tab.Navigator>

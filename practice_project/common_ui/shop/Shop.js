@@ -22,7 +22,6 @@ export const Shop = props => {
         shop_id: data,
       },
     }).then(res => {
-      console.log(res);
       setFeeds([...feeds, ...res.data.payload.feed_list.results]);
       setIsLoading(false);
       setTotalCount(res.data.payload.feed_list.total_count);

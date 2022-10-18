@@ -1,5 +1,5 @@
 import Map from '../screens/map/Map';
-import StackNavigation from '../screens/feed/StackNavigation';
+import FeedStackNavigation from '../screens/feed/StackNavigation';
 import Suggestion from '../screens/suggestion/Suggestion';
 
 export const Route = [
@@ -12,8 +12,8 @@ export const Route = [
   },
   {
     id: 2,
-    name: 'StackNavigation',
-    component: StackNavigation,
+    name: 'FeedStackNavigation',
+    component: FeedStackNavigation,
     focused: require('../assets/icons/navigation/ic_feed_focused.png'),
     unfocused: require('../assets/icons/navigation/ic_feed.png'),
   },
