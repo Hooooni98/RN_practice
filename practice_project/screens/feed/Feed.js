@@ -9,7 +9,6 @@ import {RenderLoader} from '../../common_ui/RenderLoader';
 import {DefaultHeader} from '../../common_ui/headers/DefaultHeader';
 
 const Feed = props => {
-  const flatListRef = useRef(null);
   const [feeds, setFeeds] = useState([]);
   const [offset, setOffset] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
@@ -17,6 +16,7 @@ const Feed = props => {
   const [noFeedImage, setNoFeedImage] = useState(null);
 
   // go to scroll on top
+  const flatListRef = useRef(null);
   const stackNavigation = props.navigation;
   const tabNavigation = props.navigation.getParent();
   tabNavigation?.addListener('tabPress', e => {
@@ -24,6 +24,10 @@ const Feed = props => {
       toTop();
     }
   });
+  const toTop = () => {
+    flatListRef.current.scrollToOffset({animated: true, offset: 0});
+  };
+
   const getFeedList = async data => {
     setIsLoading(true);
     await ApiMangerV1.get('feeds/feed/', {
@@ -53,11 +57,6 @@ const Feed = props => {
     getFeedList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset]);
-
-  const toTop = () => {
-    // use current
-    flatListRef.current.scrollToOffset({animated: true, offset: 0});
-  };
 
   return (
     <SafeAreaView style={styles.container}>

@@ -1,6 +1,7 @@
 import Map from '../screens/map/Map';
 import FeedStackNavigation from '../screens/feed/StackNavigation';
 import Suggestion from '../screens/suggestion/Suggestion';
+import Mypage from '../screens/mypage/Mypage';
 
 export const Route = [
   {
@@ -34,7 +35,7 @@ export const Route = [
   {
     id: 5,
     name: 'Mypage',
-    component: Suggestion,
+    component: Mypage,
     focused: require('../assets/icons/navigation/ic_mypage_focused.png'),
     unfocused: require('../assets/icons/navigation/ic_mypage.png'),
   },
