@@ -1,13 +1,11 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {Text, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 const Suggestion = () => {
   return (
-    <View style={styles.container}>
-      <View style={styles.contentContainer}>
-        <Text style={styles.title}>Suggestion</Text>
-      </View>
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Suggestion</Text>
+    </SafeAreaView>
   );
 };
 
@@ -16,10 +14,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  contentContainer: {
-    alignItems: 'center',
-  },
   title: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     fontSize: 20,
     color: '#000',
   },
