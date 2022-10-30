@@ -1,5 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import {Dimensions, View, StyleSheet, FlatList, Animated} from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import {Dimensions, View, StyleSheet, FlatList} from 'react-native';
+import Animated from 'react-native-reanimated';
 
 import {ApiMangerV1} from '../../../common/api/v1/ApiMangerV1';
 import {globalVariable} from '../../../common/globalVariable';
@@ -14,7 +15,6 @@ const RenderScene = props => {
   const [totalCount, setTotalCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [noFeedImage, setNoFeedImage] = useState(null);
-  console.log(tabRoute, tabIndex);
   const getFeedList = async data => {
     setIsLoading(true);
     await ApiMangerV1.get('feeds/feed/', {
@@ -50,6 +50,7 @@ const RenderScene = props => {
         <View style={styles.container}>
           <Animated.FlatList
             // ref={flatListRef}
+            style={props.render_style}
             data={feeds}
             renderItem={({item}) => <UI_Feed {...item} />}
             keyExtractor={(feeds, index) => index.toString()}
@@ -57,13 +58,17 @@ const RenderScene = props => {
             onEndReached={loadMoreItem}
             onEndReachedThreshold={3}
             contentContainerStyle={{
-              paddingTop: headerHeight + 50,
+              paddingTop: tabBarHeight,
               minHeight: window.height + headerHeight - tabBarHeight,
             }}
             onScroll={
               isTabFocused
                 ? Animated.event(
-                    [{nativeEvent: {contentOffset: {y: props.scrollY}}}],
+                    [
+                      {nativeEvent: {contentOffset: {y: props.translateY}}},
+                      console.log(props.translateY),
+                    ],
+
                     {useNativeDriver: true},
                   )
                 : null

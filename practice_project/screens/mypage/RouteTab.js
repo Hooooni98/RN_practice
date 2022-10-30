@@ -4,8 +4,6 @@ import {
   View,
   Text,
   Dimensions,
-  Animated,
-  PanResponder,
   Platform,
   StatusBar,
   TouchableOpacity,
@@ -13,7 +11,18 @@ import {
 import {TabView, TabBar} from 'react-native-tab-view';
 import Header from './Header';
 import RenderScene from './renderScene/RenderScene';
-
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {
+  Gesture,
+  GestureDetector,
+  GestureHandlerRootView,
+} from 'react-native-gesture-handler';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
+import RenderLoader from '../../common_ui/RenderLoader';
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 const TabBarHeight = 48;
@@ -22,33 +31,63 @@ const SafeStatusBar = Platform.select({
   ios: 44,
   android: StatusBar.currentHeight,
 });
-const tab1ItemSize = windowWidth / 2;
-const tab2ItemSize = windowWidth / 3;
-const PullToRefreshDist = 150;
 
 const RouteTab = props => {
+  const {top} = useSafeAreaInsets();
+
   const [tabIndex, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'feed', title: '피드'},
     {key: 'map', title: '지도'},
   ]);
-  const [canScroll, setCanScroll] = useState(true);
-  const [tab1Data] = useState(Array(40).fill(0));
-  const [tab2Data] = useState(Array(30).fill(0));
 
-  /**
-   * ref
-   */
-  const scrollY = useRef(new Animated.Value(0)).current;
-  const headerScrollY = useRef(new Animated.Value(0)).current;
-  // for capturing header scroll on Android
-  const headerMoveScrollY = useRef(new Animated.Value(0)).current;
-  const listRefArr = useRef([]);
-  const listOffset = useRef({});
+  const translateY = useSharedValue(0);
+
+  const context = useSharedValue({y: 0});
+  const gesture = Gesture.Pan()
+    .onStart(() => {
+      context.value = {y: translateY.value};
+    })
+    .onUpdate(event => {
+      translateY.value = event.translationY + context.value.y;
+      translateY.value = Math.max(translateY.value, -HeaderHeight);
+    })
+    .onEnd(() => {
+      if (translateY.value > 0) {
+        translateY.value = withSpring(0, {damping: 50});
+      }
+    });
+  const tabGesture = Gesture.Pan()
+    .onStart(() => {
+      context.value = {y: translateY.value};
+    })
+    .onUpdate(event => {
+      translateY.value = event.translationY + context.value.y;
+      translateY.value = Math.max(translateY.value, -HeaderHeight);
+    })
+    .onEnd(() => {
+      if (translateY.value > 0) {
+        translateY.value = withSpring(0, {damping: 50});
+      }
+    });
+  const transfromStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{translateY: translateY.value}],
+    };
+  });
+  const tabStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{translateY: HeaderHeight + translateY.value}],
+    };
+  });
+  const screenStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{translateY: HeaderHeight + translateY.value}],
+    };
+  });
+
   const isListGliding = useRef(false);
-  const headerScrollStart = useRef(0);
   const _tabIndex = useRef(0);
-  const refreshStatusRef = useRef(false);
 
   // go to scroll on top
   console.log(props.navigation);
@@ -64,46 +103,40 @@ const RouteTab = props => {
 
   /////// Header part ///////
   const renderHeader = () => {
-    const y = scrollY.interpolate({
-      inputRange: [0, HeaderHeight],
-      outputRange: [0, -HeaderHeight],
-      extrapolateRight: 'clamp',
-    });
     return (
-      <Animated.View
-        // {...headerPanResponder.panHandlers}
-        style={[styles.header, {transform: [{translateY: y}]}]}>
-        <TouchableOpacity activeOpacity={1}>
-          <Header />
-        </TouchableOpacity>
-      </Animated.View>
+      <GestureDetector gesture={gesture}>
+        <Animated.View
+          // {...panResponder.panHandlers}
+          style={[styles.header, transfromStyle]}>
+          <TouchableOpacity activeOpacity={1}>
+            <Header />
+          </TouchableOpacity>
+        </Animated.View>
+      </GestureDetector>
     );
   };
   /////// Header part end ///////
 
   /////// Tab part ///////
   const renderTabBar = props => {
-    const y = scrollY.interpolate({
-      inputRange: [0, HeaderHeight],
-      outputRange: [HeaderHeight, 0],
-      extrapolateRight: 'clamp',
-    });
     return (
-      <Animated.View
-        // {...headerPanResponder.panHandlers}
-        style={[styles.tab_bar, {transform: [{translateY: y}]}]}>
-        <TabBar
-          {...props}
-          onTabPress={({route, preventDefault}) => {
-            if (isListGliding.current) {
-              preventDefault();
-            }
-          }}
-          style={styles.tab}
-          renderLabel={renderLabel}
-          indicatorStyle={styles.indicator}
-        />
-      </Animated.View>
+      <GestureDetector gesture={tabGesture}>
+        <Animated.View
+          // {...panResponder.panHandlers}
+          style={[styles.tab_bar, tabStyle]}>
+          <TabBar
+            {...props}
+            onTabPress={({route, preventDefault}) => {
+              if (isListGliding.current) {
+                preventDefault();
+              }
+            }}
+            style={styles.tab}
+            renderLabel={renderLabel}
+            indicatorStyle={styles.indicator}
+          />
+        </Animated.View>
+      </GestureDetector>
     );
   };
 
@@ -140,27 +173,31 @@ const RouteTab = props => {
       const isFocused = route.key === routes[tabIndex].key;
 
       return (
-        <RenderScene
-          headerHeight={HeaderHeight}
-          tabBarHeight={TabBarHeight}
-          scrollY={scrollY}
-          // onMomentumScrollBegin={onMomentumScrollBegin}
-          // onMomentumScrollEnd={onMomentumScrollEnd}
-          // onScrollEndDrag={onScrollEndDrag}
-          tabRoute={route}
-          tabIndex={tabIndex}
-          isTabFocused={isFocused}
-        />
+        <Animated.View style={[styles.container, screenStyle]}>
+          <RenderScene
+            headerHeight={HeaderHeight}
+            tabBarHeight={TabBarHeight}
+            translateY={translateY.value}
+            // onMomentumScrollBegin={onMomentumScrollBegin}
+            // onMomentumScrollEnd={onMomentumScrollEnd}
+            // onScrollEndDrag={onScrollEndDrag}
+            tabRoute={route}
+            tabIndex={tabIndex}
+            isTabFocused={isFocused}
+          />
+        </Animated.View>
       );
     },
-    [HeaderHeight, tabIndex],
+    [tabIndex],
   );
 
   return (
-    <View style={styles.container}>
-      {renderTabView()}
-      {renderHeader()}
-    </View>
+    <GestureHandlerRootView style={styles.container}>
+      <View style={styles.container}>
+        {renderTabView()}
+        {renderHeader()}
+      </View>
+    </GestureHandlerRootView>
   );
 };
 
@@ -168,12 +205,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  status_bar: {
+    backgroundColor: '#888',
+  },
   // header //
   header: {
     height: HeaderHeight,
     width: '100%',
     position: 'absolute',
-    backgroundColor: '#FFF',
+    backgroundColor: '#AAA',
   },
   // header //
 

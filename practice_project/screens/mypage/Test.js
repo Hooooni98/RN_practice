@@ -47,10 +47,12 @@ const App = () => {
   const headerScrollY = useRef(new Animated.Value(0)).current;
   // for capturing header scroll on Android
   const headerMoveScrollY = useRef(new Animated.Value(0)).current;
+  const headerScrollStart = useRef(0);
+
   const listRefArr = useRef([]);
   const listOffset = useRef({});
   const isListGliding = useRef(false);
-  const headerScrollStart = useRef(0);
+
   const _tabIndex = useRef(0);
   const refreshStatusRef = useRef(false);
 
